@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Mô phỏng thao túng tâm lý truyền thông</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f8ff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #1a3c8c;
+    }
+    textarea {
+      width: 80%;
+      height: 80px;
+      padding: 10px;
+      font-size: 14px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+    }
+    #simulateBtn { background: #0077cc; }
+    #analyzeBtn { background: #28a745; }
+    #simulation {
+      margin-top: 20px;
+      min-height: 200px;
+      border: 1px dashed #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .message {
+      display: inline-block;
+      margin: 5px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: white;
+      animation: spread 2s forwards;
+    }
+    .fake { background: #e63946; }
+    .real { background: #1d3557; }
+    @keyframes spread {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    #aiResult {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #eef3ff;
+      text-align: left;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    ul.sources {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+    ul.sources li {
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mô phỏng thao túng tâm lý truyền thông</h1>
+  <p>Nhập nội dung tin bạn muốn kiểm chứng:</p>
+  <textarea id="userInput" placeholder="Nhập bài viết hoặc tiêu đề..."></textarea><br>
+  <button id="simulateBtn">Mô phỏng lan truyền</button>
+  <button id="analyzeBtn">Phân tích AI</button>
+
+  <div id="simulation"></div>
+  <div id="aiResult"></div>
+
+  <script>
+    const simulateBtn = document.getElementById("simulateBtn");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const simulation = document.getElementById("simulation");
+    const aiResult = document.getElementById("aiResult");
+
+    // Mô phỏng lan truyền tin
+    simulateBtn.addEventListener("click", () => {
+      simulation.innerHTML = "";
+      let text = document.getElementById("userInput").value;
+      if (!text.trim()) {
+        alert("Hãy nhập nội dung trước!");
+        return;
+      }
+
+      // Nếu có từ khóa giật gân -> coi là tin giả
+      const fakeKeywords = ["sốc", "giật gân", "chưa xác thực", "tin nóng", "gây hoang mang"];
+      let isFake = fakeKeywords.some(k => text.toLowerCase().includes(k));
+
+      let type = isFake ? "fake" : "real";
+      let count = isFake ? 15 : 7; // tin giả lan nhanh hơn
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          let msg = document.createElement("div");
+          msg.className = `message ${type}`;
+          msg.innerText = isFake ? "Tin giả lan!" : "Tin thật lan!";
+          simulation.appendChild(msg);
+        }, i * (isFake ? 200 : 500));
+      }
+    });
+
+    // Phân tích AI (giả lập + nguồn báo)
+    analyzeBtn.addEventListener("click", () => {
+      let text = document.getElementById("userInput").value;
+      if (!text.trim()) {
+        alert("Hãy nhập nội dung trước!");
+        return;
+      }
+
+      const fakeKeywords = ["sốc", "giật gân", "chưa xác thực", "tin nóng", "gây hoang mang"];
+      let isFake = fakeKeywords.some(k => text.toLowerCase().includes(k));
+
+      let sourcesHTML = `
+        <p>👉 Nên kiểm chứng tại các nguồn báo uy tín:</p>
+        <ul class="sources">
+          <li>VnExpress (<a href="https://vnexpress.net" target="_blank">vnexpress.net</a>)</li>
+          <li>Tuổi Trẻ (<a href="https://tuoitre.vn" target="_blank">tuoitre.vn</a>)</li>
+          <li>Thanh Niên (<a href="https://thanhnien.vn" target="_blank">thanhnien.vn</a>)</li>
+          <li>BBC News (<a href="https://bbc.com/news" target="_blank">bbc.com/news</a>)</li>
+          <li>Reuters (<a href="https://reuters.com" target="_blank">reuters.com</a>)</li>
+        </ul>
+      `;
+
+      if (isFake) {
+        aiResult.innerHTML = `
+          <h3>🔎 Phân tích AI:</h3>
+          <p>⚠️ Nội dung có dấu hiệu <b>chưa được kiểm chứng</b> hoặc mang tính giật gân.</p>
+          ${sourcesHTML}
+        `;
+      } else {
+        aiResult.innerHTML = `
+          <h3>🔎 Phân tích AI:</h3>
+          <p>✅ Nội dung không có dấu hiệu bất thường.</p>
+          ${sourcesHTML}
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
